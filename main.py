@@ -10,7 +10,7 @@ chrome_options = Options()
 chrome_options.page_load_strategy = 'eager'
 chrome_options.add_argument("--window-size=1920,1080")
 
-search_text = "delonghi ecam 290.31"
+search_text = "delonghi"
 
 def stealth_driver():
     browser = webdriver.Chrome(options=chrome_options)
@@ -39,13 +39,13 @@ check_boxs = driver.find_elements("class name", "pui-checked-control-item__label
 lst_elem = []
 for elements in check_boxs:
     lst_elem.append(elements)
-if len(lst_elem) > 3:
+if len(lst_elem) == 6:
     available_goods = check_boxs[1]
     available_goods.click()
 else:
     available_goods = check_boxs[2]
     available_goods.click()
-
+print(len(lst_elem))
 time.sleep(4)
 driver.find_element("class name", "input.text-input.size").click()
 elements_class = driver.find_elements("class name", "option")
@@ -63,9 +63,9 @@ for name_id in content_id:
     try:
         price = name_id.find("div", class_="catalog-item-regular-desktop__price-conditions").find("div",class_="catalog-item-regular-desktop__price-block").find("div", class_="catalog-item-regular-desktop__price").get_text(strip=True)
         name = name_id.find("div", class_= "catalog-item-regular-desktop__main-info").find("a").get("title")
-        comments_rate = name_id.find("div", class_= "catalog-item-review").find("a", class_="catalog-item-review__link")
+        comments_rate = name_id.find("div", class_= "catalog-item-review").find("a", class_="catalog-item-review__link").find("div", class_= "catalog-item-review__review-wrapper").find("div", class_= "pui-rating-display").find("div", class_= "pui-rating-display__rating").find("span").get_text(strip=True)
         comments_rate_count = name_id.find("div", class_="catalog-item-review").find("a", class_="catalog-item-review__link").find("div", class_="catalog-item-review__review-wrapper").find("div", class_="pui-rating-display").find("div",class_="pui-rating-display__text").get_text(strip=True)
-        print(f"Name: {name} Price: {price} Rate: {comments_rate} {comments_rate_count}")
+        print(f"Название товара: {name} Цена: {price} Средня оценка: {comments_rate} Кол-во комментариев: {comments_rate_count}")
     except AttributeError:
         print("Скорее всего товара нет в наличии")
 
