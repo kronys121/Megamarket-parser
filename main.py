@@ -10,7 +10,7 @@ chrome_options = Options()
 chrome_options.page_load_strategy = 'eager'
 chrome_options.add_argument("--window-size=1920,1080")
 
-search_text = "delonghi"
+search_text = "delonghi ecam 290.31"
 result_list = []
 def stealth_driver():
     browser = webdriver.Chrome(options=chrome_options)
@@ -34,19 +34,19 @@ time.sleep(1)
 click_but = driver.find_element("class name", "pui-button-element.pui-button-element_variant_primary.pui-button-element_size_lg")
 click_but.click()
 time.sleep(4)
-check_boxs = driver.find_elements("class name", "pui-checked-control-item__label.pui-toggle__label")
+check_boxs = driver.find_elements("class name", "filters-desktop__filter-item")
 
 # Проверка на кол-во чек боксов и выбор Товаров в наличии
 lst_elem = []
 for elements in check_boxs:
     lst_elem.append(elements)
-if len(lst_elem) == 6:
+if len(lst_elem) == 3:
     available_goods = check_boxs[1]
     available_goods.click()
 else:
     available_goods = check_boxs[2]
     available_goods.click()
-
+print(len(lst_elem))
 time.sleep(4)
 driver.find_element("class name", "input.text-input.size").click()
 elements_class = driver.find_elements("class name", "option")
@@ -92,4 +92,4 @@ with open("result.json","w", encoding="utf-8") as file:
     json.dump(result_list, file, indent=4, ensure_ascii=False)
 
 
-time.sleep(50)
+time.sleep(5000)
