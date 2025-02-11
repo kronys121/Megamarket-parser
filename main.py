@@ -68,43 +68,8 @@ for title in titles:
 
                 })
 
+with open("result.json","w", encoding="utf-8") as file:
+    json.dump(result_list, file, indent=4, ensure_ascii=False)
 
 
-
-
-
-# content_id = content.find_all("css selector", "[class='catalog-item-regular-desktop.ddl_product catalog-item-desktop']")
-#
-# #Поиск и вывод элементов Цены, названия, средней оценки и кол-во комментариев
-# for name_id in content_id:
-#     bonus_price = "0%"
-#     bonus_amount = "0"
-#     try:
-#         price = name_id.find("div", class_="catalog-item-regular-desktop__price-conditions").find("div",class_="catalog-item-regular-desktop__price-block").find("div", class_="catalog-item-regular-desktop__price").get_text(strip=True).replace(u'\xa0', ' ')
-#         try:
-#             bonus_amount = name_id.find("div", class_="catalog-item-regular-desktop__price-conditions").find("div",class_="catalog-item-regular-desktop__price-block").find("div",class_="catalog-item-regular-desktop__bonus money-bonus sm money-bonus_loyalty").find("span", class_="bonus-amount").get_text(strip=True).replace(u'\xa0', ' ')
-#
-#             bonus_price = name_id.find("div", class_="catalog-item-regular-desktop__price-conditions").find("div",class_="catalog-item-regular-desktop__price-block").find("div",class_="catalog-item-regular-desktop__bonus money-bonus sm money-bonus_loyalty").find("span", class_="bonus-percent").get_text(strip=True).replace(u'\xa0', ' ')
-#         except AttributeError:
-#             pass
-#         name = name_id.find("div", class_= "catalog-item-regular-desktop__main-info").find("a").get("title").replace(u'\xa0', ' ')
-#         comments_rate = name_id.find("div", class_= "catalog-item-review").find("a", class_="catalog-item-review__link").find("div", class_= "catalog-item-review__review-wrapper").find("div", class_= "pui-rating-display").find("div", class_= "pui-rating-display__rating").find("span").get_text(strip=True).replace(u'\xa0', ' ')
-#         comments_rate_count = name_id.find("div", class_="catalog-item-review").find("a", class_="catalog-item-review__link").find("div", class_="catalog-item-review__review-wrapper").find("div", class_="pui-rating-display").find("div",class_="pui-rating-display__text").get_text(strip=True).replace(u'\xa0', ' ')
-#         print(f"Название товара: {name} Цена: {price} Скидка: {bonus_price} Бонусные рубли: {bonus_amount} Средня оценка: {comments_rate} Кол-во комментариев: {comments_rate_count}")
-#         result_list.append({
-#             "Название товара": name,
-#             "Цена": price,
-#             "Скидка": bonus_price,
-#             "Бонусные рубли": bonus_amount,
-#             "Средняя оценка": comments_rate,
-#             "Кол-во комментариев": comments_rate_count,
-#
-#         })
-#     except AttributeError:
-#         pass
-#
-# with open("result.json","w", encoding="utf-8") as file:
-#     json.dump(result_list, file, indent=4, ensure_ascii=False)
-
-
-time.sleep(5000)
+time.sleep(5)
