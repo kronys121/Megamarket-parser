@@ -1,72 +1,78 @@
 import time
 import undetected_chromedriver as uc
-from bs4 import BeautifulSoup
 from selenium.webdriver.chrome.options import Options
 import json
 
+class MMParser:
 
-chrome_options = Options()
+    def __init__(self, input_text: str,):
+        self.input_text = input_text
+        self.data = []
 
-chrome_options.page_load_strategy = 'eager'
+    def browser_settings(self):
+        chrome_options = Options()
+        chrome_options.page_load_strategy = 'eager'
+        self.driver = uc.Chrome(options=chrome_options)
+        self.driver.get('https://megamarket.ru/')
 
-search_text = "delonghi ecam 290.31"
-result_list = []
+    def search_put(self):
+        time.sleep(4)
+        self.driver.find_element("css selector", "[class='search-tab__description-text']").click()
+        self.driver.find_element("class name", "search-input__textarea").send_keys(self.input_text)
+        time.sleep(1)
+        click_but = self.driver.find_element("class name",
+                                        "pui-button-element.pui-button-element_variant_primary.pui-button-element_size_lg")
+        click_but.click()
+        time.sleep(4)
 
-driver = uc.Chrome(options=chrome_options)
+    def param(self):
+        check_boxs = self.driver.find_elements("class name", "filter-title.filters-desktop__solo-title-text")
 
+        lst_elem = []
+        for elements in check_boxs:
+            lst_elem.append(elements.text)
 
-main_page = BeautifulSoup(driver.page_source, "lxml")
-driver.get('https://megamarket.ru/')
-# Находим элемент поиска и вставляем текст
-time.sleep(4)
-search_but = driver.find_element("css selector", "[class='search-tab__description-text']").click()
-input_text = driver.find_element("class name", "search-input__textarea")
-input_text.send_keys(search_text)
-time.sleep(1)
-click_but = driver.find_element("class name", "pui-button-element.pui-button-element_variant_primary.pui-button-element_size_lg")
-click_but.click()
-time.sleep(4)
-check_boxs = driver.find_elements("class name", "filter-title.filters-desktop__solo-title-text")
+        index_box_available = lst_elem.index("В наличии")
+        check_boxs[index_box_available].click()
+        time.sleep(4)
+        self.driver.find_element("class name", "input.text-input.size").click()
+        elements_class = self.driver.find_elements("class name", "option")
+        elements_class[4].click()
+        time.sleep(4)
 
+    def pars_data(self):
+        titles = self.driver.find_elements("css selector",
+                                      "[class='catalog-item-regular-desktop ddl_product catalog-item-desktop']")
 
-# Проверка на кол-во чек боксов и выбор Товаров в наличии (Нужно переделать)
-lst_elem = []
-for elements in check_boxs:
-    lst_elem.append(elements.text)
+        for title in titles:
+            bonus_price = "0%"
+            bonus_amount = "0"
+            name = title.find_element("css selector", "[data-test='product-name-link']").text
+            price = title.find_element("css selector", "[data-test='product-price']").text
+            rate = title.find_element("css selector", "[class='pui-rating-display__narrow-text']").text
+            rate_count = title.find_element("css selector", "[class='pui-rating-display__text']").text.strip("\n•")
 
-index_box_available = lst_elem.index("В наличии")
-check_boxs[index_box_available].click()
-
-print(len(lst_elem))
-time.sleep(4)
-driver.find_element("class name", "input.text-input.size").click()
-elements_class = driver.find_elements("class name", "option")
-elements_class[4].click()
-
-time.sleep(3)
-
-titles = driver.find_elements("css selector", "[class='catalog-item-regular-desktop ddl_product catalog-item-desktop']")
-
-for title in titles:
-    bonus_price = "0%"
-    bonus_amount = "0"
-    name = title.find_element("css selector", "[data-test='product-name-link']").text
-    price = title.find_element("css selector", "[data-test='product-price']").text
-    rate = title.find_element("css selector", "[class='pui-rating-display__text-bullet']").text
-    rate_count = title.find_element("css selector", "[class='pui-rating-display__narrow-text']").text
-
-    result_list.append({
-                    "Название товара": name,
+            data = {"Название товара": name,
                     "Цена": price,
                     "Скидка": bonus_price,
                     "Бонусные рубли": bonus_amount,
                     "Средняя оценка": rate,
-                    "Кол-во комментариев": rate_count,
-
-                })
-
-with open("result.json","w", encoding="utf-8") as file:
-    json.dump(result_list, file, indent=4, ensure_ascii=False)
+                    "Кол-во комментариев": rate_count,}
+            self.data.append(data)
+        self.save_data()
 
 
-time.sleep(5)
+
+
+    def save_data(self):
+        with open("result.json", "w", encoding="utf-8") as file:
+            json.dump(self.data, file, indent=4, ensure_ascii=False)
+
+    def start_pars(self):
+        self.browser_settings()
+        self.search_put()
+        self.param()
+        self.pars_data()
+
+if __name__ == "__main__":
+    MMParser(input_text="delonghi ecam 290.31").start_pars()
