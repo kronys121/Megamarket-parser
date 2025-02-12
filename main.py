@@ -2,6 +2,7 @@ import time
 import undetected_chromedriver as uc
 from selenium.webdriver.chrome.options import Options
 import json
+from loguru import logger
 
 class MMParser:
 
@@ -58,6 +59,8 @@ class MMParser:
                     "Бонусные рубли": bonus_amount,
                     "Средняя оценка": rate,
                     "Кол-во комментариев": rate_count,}
+            logger.add("debug.log", format="{time} {level} {message}",)
+            logger.info(f'Добавил: {name}, {price}, {rate}')
             self.data.append(data)
         self.save_data()
 
@@ -65,8 +68,10 @@ class MMParser:
 
 
     def save_data(self):
-        with open("result.json", "w", encoding="utf-8") as file:
-            json.dump(self.data, file, indent=4, ensure_ascii=False)
+        with open("result.json", "w", encoding="utf-8") as f:
+            json.dump(self.data, f, indent=4, ensure_ascii=False)
+
+        self.driver.quit()
 
     def start_pars(self):
         self.browser_settings()
@@ -76,3 +81,4 @@ class MMParser:
 
 if __name__ == "__main__":
     MMParser(input_text="delonghi ecam 290.31").start_pars()
+
