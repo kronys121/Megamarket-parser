@@ -26,25 +26,22 @@ time.sleep(1)
 click_but = driver.find_element("class name", "pui-button-element.pui-button-element_variant_primary.pui-button-element_size_lg")
 click_but.click()
 time.sleep(4)
-check_boxs = driver.find_elements("class name", "filters-desktop__filter-item")
+check_boxs = driver.find_elements("class name", "filter-title.filters-desktop__solo-title-text")
 
 
-# Проверка на кол-во чек боксов и выбор Товаров в наличии
+# Проверка на кол-во чек боксов и выбор Товаров в наличии (Нужно переделать)
 lst_elem = []
 for elements in check_boxs:
-    lst_elem.append(elements)
-if len(lst_elem) == 3:
-    available_goods = check_boxs[1]
-    available_goods.click()
-else:
-    available_goods = check_boxs[2]
-    available_goods.click()
+    lst_elem.append(elements.text)
+
+index_box_available = lst_elem.index("В наличии")
+check_boxs[index_box_available].click()
+
 print(len(lst_elem))
 time.sleep(4)
 driver.find_element("class name", "input.text-input.size").click()
 elements_class = driver.find_elements("class name", "option")
-element_click = elements_class[4]
-element_click.click()
+elements_class[4].click()
 
 time.sleep(3)
 
